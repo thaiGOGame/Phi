@@ -1,17 +1,10 @@
 package View;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.BorderUIResource;
-import javax.swing.plaf.basic.BasicArrowButton;
-import javax.swing.plaf.basic.BasicButtonUI;
-import javax.swing.plaf.basic.BasicComboBoxUI;
-import javax.swing.plaf.basic.BasicComboPopup;
+import bus.Tour_BUS;
+import connectDB.ConnectDB;
+import entities.Tour;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,65 +13,75 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Area;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-import java.util.Objects;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 
-import javax.accessibility.Accessible;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JWindow;
-
-import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
-import java.awt.Component;
-import java.awt.Container;
-
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import java.awt.Cursor;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-import java.awt.Choice;
+import javax.swing.JFormattedTextField;
 
 public class Home extends JFrame {
 
 	private JPanel pnHome;
-
+	private LoginSignup login;
+	private DatTour datTour;
+	//
+	private JPanel item1,item2,item3,item4,item5,item6;
+	//
+	private JLabel tourPicture1,tourName1,tourPrice1,tourTime1,tourID1;
+	private JLabel tourPicture2,tourName2,tourPrice2,tourTime2,tourID2;
+	private JLabel tourPicture3,tourName3,tourPrice3,tourTime3,tourID3;
+	private JLabel tourPicture4,tourName4,tourPrice4,tourTime4,tourID4;
+	private JLabel tourPicture5,tourName5,tourPrice5,tourTime5,tourID5;
+	private JLabel tourPicture6,tourName6,tourPrice6,tourTime6,tourID6;
+	//
+	private Tour_BUS tourBus;
+	private ArrayList<Tour> ds;
+	//
+	private int iTour,lItem;;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Home frame = new Home();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Home frame = new Home();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+		new Home().setVisible(true);
 	}
 
 	/**
 	 * Create the frame.
 	 */
 	public Home() {
+		//
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		//
+		tourBus = new Tour_BUS();
+		ds = tourBus.getDS();
+		
 		setSize(1200,700);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
@@ -114,7 +117,7 @@ public class Home extends JFrame {
 		btnUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Login login = new Login();
+				login = new LoginSignup();
 				login.main(null);
 			}
 		});
@@ -162,7 +165,7 @@ public class Home extends JFrame {
 		
 		JLabel titleContent = new JLabel("Tour đặc biệt dành cho bạn");
 		titleContent.setFont(new Font("Arial", Font.BOLD, 20));
-		titleContent.setBounds(10, 107, 266, 31);
+		titleContent.setBounds(10, 101, 266, 31);
 		pnHome.add(titleContent);
 		
 		JPanel listTour = new JPanel();
@@ -171,13 +174,14 @@ public class Home extends JFrame {
 		pnHome.add(listTour);
 		listTour.setLayout(null);
 		
-		JPanel item1 = new JPanel();
+		//
+		item1 = new JPanel();
 		item1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		item1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Login lg = new Login();
-				lg.main(null);
+				datTour = new DatTour();
+				datTour.setVisible(true);
 			}
 		});
 		item1.setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
@@ -186,7 +190,7 @@ public class Home extends JFrame {
 		listTour.add(item1);
 		item1.setLayout(null);
 		
-		JLabel tourPicture1 = new JLabel("");
+		tourPicture1 = new JLabel("");
 		tourPicture1.setFocusTraversalKeysEnabled(false);
 		tourPicture1.setFocusTraversalPolicyProvider(true);
 		tourPicture1.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -198,24 +202,24 @@ public class Home extends JFrame {
 		tourPicture1.setBounds(10, 11, 300, 165);
 		item1.add(tourPicture1);
 		
-		JLabel tourName1 = new JLabel("Đà Lạt");
+		tourName1 = new JLabel("Đà Lạt");
 		tourName1.setFont(new Font("Arial", Font.BOLD, 15));
 		tourName1.setBounds(10, 196, 300, 20);
 		item1.add(tourName1);
 		
-		JLabel tourPrice1 = new JLabel("5.000.000Đ");
+		tourPrice1 = new JLabel("5.000.000Đ");
 		tourPrice1.setHorizontalAlignment(SwingConstants.RIGHT);
 		tourPrice1.setFont(new Font("Arial", Font.BOLD, 18));
 		tourPrice1.setForeground(Color.RED);
 		tourPrice1.setBounds(130, 234, 180, 15);
 		item1.add(tourPrice1);
 		
-		JLabel tourTime1 = new JLabel("11/04/2023 - 3 ngày");
+		tourTime1 = new JLabel("11/04/2023 - 3 ngày");
 		tourTime1.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourTime1.setBounds(10, 182, 300, 14);
 		item1.add(tourTime1);
 		
-		JLabel tourID1 = new JLabel("Mã tour: DL001");
+		tourID1 = new JLabel("Mã tour: DL001");
 		tourID1.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourID1.setBounds(10, 214, 300, 14);
 		item1.add(tourID1);
@@ -227,7 +231,7 @@ public class Home extends JFrame {
 		tourBtn1.setBounds(10, 235, 88, 16);
 		item1.add(tourBtn1);
 		
-		JPanel item2 = new JPanel();
+		item2 = new JPanel();
 		item2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		item2.setLayout(null);
 		item2.setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
@@ -235,7 +239,7 @@ public class Home extends JFrame {
 		item2.setBounds(341, 0, 320, 260);
 		listTour.add(item2);
 		
-		JLabel tourPicture2 = new JLabel("");
+		tourPicture2 = new JLabel("");
 		tourPicture2.setVerticalTextPosition(SwingConstants.BOTTOM);
 		tourPicture2.setVerticalAlignment(SwingConstants.TOP);
 		tourPicture2.setIgnoreRepaint(true);
@@ -246,24 +250,24 @@ public class Home extends JFrame {
 		tourPicture2.setBounds(10, 11, 300, 165);
 		item2.add(tourPicture2);
 		
-		JLabel tourName2 = new JLabel("Đà Lạt");
+		tourName2 = new JLabel("Đà Lạt");
 		tourName2.setFont(new Font("Arial", Font.BOLD, 15));
 		tourName2.setBounds(10, 196, 300, 20);
 		item2.add(tourName2);
 		
-		JLabel tourPrice2 = new JLabel("5.000.000Đ");
+		tourPrice2 = new JLabel("5.000.000Đ");
 		tourPrice2.setHorizontalAlignment(SwingConstants.RIGHT);
 		tourPrice2.setForeground(Color.RED);
 		tourPrice2.setFont(new Font("Arial", Font.BOLD, 18));
 		tourPrice2.setBounds(130, 234, 180, 15);
 		item2.add(tourPrice2);
 		
-		JLabel tourTime2 = new JLabel("11/04/2023 - 3 ngày");
+		tourTime2 = new JLabel("11/04/2023 - 3 ngày");
 		tourTime2.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourTime2.setBounds(10, 182, 300, 14);
 		item2.add(tourTime2);
 		
-		JLabel tourID2 = new JLabel("Mã tour: DL001");
+		tourID2 = new JLabel("Mã tour: DL001");
 		tourID2.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourID2.setBounds(10, 214, 300, 14);
 		item2.add(tourID2);
@@ -275,7 +279,7 @@ public class Home extends JFrame {
 		tourBtn2.setBounds(10, 235, 88, 16);
 		item2.add(tourBtn2);
 		
-		JPanel item3 = new JPanel();
+		item3 = new JPanel();
 		item3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		item3.setLayout(null);
 		item3.setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
@@ -283,7 +287,7 @@ public class Home extends JFrame {
 		item3.setBounds(680, 0, 320, 260);
 		listTour.add(item3);
 		
-		JLabel tourPicture3 = new JLabel("");
+		tourPicture3 = new JLabel("");
 		tourPicture3.setVerticalTextPosition(SwingConstants.BOTTOM);
 		tourPicture3.setVerticalAlignment(SwingConstants.TOP);
 		tourPicture3.setIgnoreRepaint(true);
@@ -294,24 +298,24 @@ public class Home extends JFrame {
 		tourPicture3.setBounds(10, 11, 300, 165);
 		item3.add(tourPicture3);
 		
-		JLabel tourName3 = new JLabel("Đà Lạt");
+		tourName3 = new JLabel("Đà Lạt");
 		tourName3.setFont(new Font("Arial", Font.BOLD, 15));
 		tourName3.setBounds(10, 196, 300, 20);
 		item3.add(tourName3);
 		
-		JLabel tourPrice3 = new JLabel("5.000.000Đ");
+		tourPrice3 = new JLabel("5.000.000Đ");
 		tourPrice3.setHorizontalAlignment(SwingConstants.RIGHT);
 		tourPrice3.setForeground(Color.RED);
 		tourPrice3.setFont(new Font("Arial", Font.BOLD, 18));
 		tourPrice3.setBounds(130, 234, 180, 15);
 		item3.add(tourPrice3);
 		
-		JLabel tourTime3 = new JLabel("11/04/2023 - 3 ngày");
+		tourTime3 = new JLabel("11/04/2023 - 3 ngày");
 		tourTime3.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourTime3.setBounds(10, 182, 300, 14);
 		item3.add(tourTime3);
 		
-		JLabel tourID3 = new JLabel("Mã tour: DL001");
+		tourID3 = new JLabel("Mã tour: DL001");
 		tourID3.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourID3.setBounds(10, 214, 300, 14);
 		item3.add(tourID3);
@@ -323,7 +327,7 @@ public class Home extends JFrame {
 		tourBtn3.setBounds(10, 235, 88, 16);
 		item3.add(tourBtn3);
 		
-		JPanel item4 = new JPanel();
+		item4 = new JPanel();
 		item4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		item4.setLayout(null);
 		item4.setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
@@ -331,7 +335,7 @@ public class Home extends JFrame {
 		item4.setBounds(0, 280, 320, 260);
 		listTour.add(item4);
 		
-		JLabel tourPicture4 = new JLabel("");
+		tourPicture4 = new JLabel("");
 		tourPicture4.setVerticalTextPosition(SwingConstants.BOTTOM);
 		tourPicture4.setVerticalAlignment(SwingConstants.TOP);
 		tourPicture4.setIgnoreRepaint(true);
@@ -342,24 +346,24 @@ public class Home extends JFrame {
 		tourPicture4.setBounds(10, 11, 300, 165);
 		item4.add(tourPicture4);
 		
-		JLabel tourName4 = new JLabel("Đà Lạt");
+		tourName4 = new JLabel("Đà Lạt");
 		tourName4.setFont(new Font("Arial", Font.BOLD, 15));
 		tourName4.setBounds(10, 196, 300, 20);
 		item4.add(tourName4);
 		
-		JLabel tourPrice4 = new JLabel("5.000.000Đ");
+		tourPrice4 = new JLabel("5.000.000Đ");
 		tourPrice4.setHorizontalAlignment(SwingConstants.RIGHT);
 		tourPrice4.setForeground(Color.RED);
 		tourPrice4.setFont(new Font("Arial", Font.BOLD, 18));
 		tourPrice4.setBounds(130, 234, 180, 15);
 		item4.add(tourPrice4);
 		
-		JLabel tourTime4 = new JLabel("11/04/2023 - 3 ngày");
+		tourTime4 = new JLabel("11/04/2023 - 3 ngày");
 		tourTime4.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourTime4.setBounds(10, 182, 300, 14);
 		item4.add(tourTime4);
 		
-		JLabel tourID4 = new JLabel("Mã tour: DL001");
+		tourID4 = new JLabel("Mã tour: DL001");
 		tourID4.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourID4.setBounds(10, 214, 300, 14);
 		item4.add(tourID4);
@@ -371,7 +375,7 @@ public class Home extends JFrame {
 		tourBtn4.setBounds(10, 235, 88, 16);
 		item4.add(tourBtn4);
 		
-		JPanel item5 = new JPanel();
+		item5 = new JPanel();
 		item5.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		item5.setLayout(null);
 		item5.setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
@@ -379,7 +383,7 @@ public class Home extends JFrame {
 		item5.setBounds(341, 280, 320, 260);
 		listTour.add(item5);
 		
-		JLabel tourPicture5 = new JLabel("");
+		tourPicture5 = new JLabel("");
 		tourPicture5.setVerticalTextPosition(SwingConstants.BOTTOM);
 		tourPicture5.setVerticalAlignment(SwingConstants.TOP);
 		tourPicture5.setIgnoreRepaint(true);
@@ -390,24 +394,24 @@ public class Home extends JFrame {
 		tourPicture5.setBounds(10, 11, 300, 165);
 		item5.add(tourPicture5);
 		
-		JLabel tourName5 = new JLabel("Đà Lạt");
+		tourName5 = new JLabel("Đà Lạt");
 		tourName5.setFont(new Font("Arial", Font.BOLD, 15));
 		tourName5.setBounds(10, 196, 300, 20);
 		item5.add(tourName5);
 		
-		JLabel tourPrice5 = new JLabel("5.000.000Đ");
+		tourPrice5 = new JLabel("5.000.000Đ");
 		tourPrice5.setHorizontalAlignment(SwingConstants.RIGHT);
 		tourPrice5.setForeground(Color.RED);
 		tourPrice5.setFont(new Font("Arial", Font.BOLD, 18));
 		tourPrice5.setBounds(130, 234, 180, 15);
 		item5.add(tourPrice5);
 		
-		JLabel tourTime5 = new JLabel("11/04/2023 - 3 ngày");
+		tourTime5 = new JLabel("11/04/2023 - 3 ngày");
 		tourTime5.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourTime5.setBounds(10, 182, 300, 14);
 		item5.add(tourTime5);
 		
-		JLabel tourID5 = new JLabel("Mã tour: DL001");
+		tourID5 = new JLabel("Mã tour: DL001");
 		tourID5.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourID5.setBounds(10, 214, 300, 14);
 		item5.add(tourID5);
@@ -419,7 +423,7 @@ public class Home extends JFrame {
 		tourBtn5.setBounds(10, 235, 88, 16);
 		item5.add(tourBtn5);
 		
-		JPanel item6 = new JPanel();
+		item6 = new JPanel();
 		item6.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		item6.setLayout(null);
 		item6.setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
@@ -427,7 +431,7 @@ public class Home extends JFrame {
 		item6.setBounds(680, 280, 320, 260);
 		listTour.add(item6);
 		
-		JLabel tourPicture6 = new JLabel("");
+		tourPicture6 = new JLabel("");
 		tourPicture6.setVerticalTextPosition(SwingConstants.BOTTOM);
 		tourPicture6.setVerticalAlignment(SwingConstants.TOP);
 		tourPicture6.setIgnoreRepaint(true);
@@ -438,24 +442,24 @@ public class Home extends JFrame {
 		tourPicture6.setBounds(10, 11, 300, 165);
 		item6.add(tourPicture6);
 		
-		JLabel tourName6 = new JLabel("Đà Lạt");
+		tourName6 = new JLabel("Đà Lạt");
 		tourName6.setFont(new Font("Arial", Font.BOLD, 15));
 		tourName6.setBounds(10, 196, 300, 20);
 		item6.add(tourName6);
 		
-		JLabel tourPrice6 = new JLabel("5.000.000Đ");
+		tourPrice6 = new JLabel("5.000.000Đ");
 		tourPrice6.setHorizontalAlignment(SwingConstants.RIGHT);
 		tourPrice6.setForeground(Color.RED);
 		tourPrice6.setFont(new Font("Arial", Font.BOLD, 18));
 		tourPrice6.setBounds(130, 234, 180, 15);
 		item6.add(tourPrice6);
 		
-		JLabel tourTime6 = new JLabel("11/04/2023 - 3 ngày");
+		tourTime6 = new JLabel("11/04/2023 - 3 ngày");
 		tourTime6.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourTime6.setBounds(10, 182, 300, 14);
 		item6.add(tourTime6);
 		
-		JLabel tourID6 = new JLabel("Mã tour: DL001");
+		tourID6 = new JLabel("Mã tour: DL001");
 		tourID6.setFont(new Font("Arial", Font.PLAIN, 10));
 		tourID6.setBounds(10, 214, 300, 14);
 		item6.add(tourID6);
@@ -467,16 +471,175 @@ public class Home extends JFrame {
 		tourBtn6.setBounds(10, 235, 88, 16);
 		item6.add(tourBtn6);
 		
-		JLabel lblNewLabel_3 = new JLabel("");
-		lblNewLabel_3.setIcon(new ImageIcon("T:\\java\\baitap\\TestGui\\images\\left-arrow.png"));
-		lblNewLabel_3.setBounds(25, 383, 48, 37);
-		pnHome.add(lblNewLabel_3);
+		JLabel btnUndo = new JLabel("");
+		btnUndo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnUndo.setIcon(new ImageIcon("T:\\java\\baitap\\TestGui\\images\\left-arrow.png"));
+		btnUndo.setBounds(25, 383, 48, 37);
+		pnHome.add(btnUndo);
 		
-		JLabel lblNewLabel_3_3 = new JLabel("");
-		lblNewLabel_3_3.setIcon(new ImageIcon("T:\\java\\baitap\\TestGui\\images\\right-arrow.png"));
-		lblNewLabel_3_3.setBounds(1122, 383, 48, 37);
-		pnHome.add(lblNewLabel_3_3);
+		JLabel btnRedu = new JLabel("");
+		btnRedu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnRedu.setIcon(new ImageIcon("T:\\java\\baitap\\TestGui\\images\\right-arrow.png"));
+		btnRedu.setBounds(1122, 383, 48, 37);
+		pnHome.add(btnRedu);
 		
+		JFormattedTextField formattedTextField = new JFormattedTextField();
+		formattedTextField.setBounds(560, 91, 184, 20);
+		pnHome.add(formattedTextField);
 		
+		iTour=0;
+		lItem=ds.size();
+		showList(iTour);
+		if (iTour<7) btnUndo.setVisible(false);
+		if (lItem-iTour<7) btnRedu.setVisible(false);
+		btnUndo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				iTour-=6;
+				showList(iTour);
+				if (iTour<6) btnUndo.setVisible(false);
+				else btnUndo.setVisible(true);
+				if (lItem-iTour<7) btnRedu.setVisible(false);
+				else btnRedu.setVisible(true);
+			}
+		});
+		btnRedu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				iTour+=6;
+				showList(iTour);
+				if (iTour<6) btnUndo.setVisible(false);
+				else btnUndo.setVisible(true);
+				if (lItem-iTour<7) btnRedu.setVisible(false);
+				else btnRedu.setVisible(true);
+			}
+		});
+	}
+	
+	private void showList(int i) {
+		ds= tourBus.getDS();
+		if (lItem-iTour==5) {
+			updateDataItem1(i);
+			i++;
+			updateDataItem2(i);
+			i++;
+			updateDataItem3(i);
+			i++;
+			updateDataItem4(i);
+			i++;
+			updateDataItem5(i);
+			item6.setVisible(false);
+		}
+		else
+		if (lItem-iTour==4) {
+			updateDataItem1(i);
+			i++;
+			updateDataItem2(i);
+			i++;
+			updateDataItem3(i);
+			i++;
+			updateDataItem4(i);
+			item5.setVisible(false);
+			item6.setVisible(false);
+		}else
+		if (lItem-iTour==3) {
+			updateDataItem1(i);
+			i++;
+			updateDataItem2(i);
+			i++;
+			updateDataItem3(i);
+			item4.setVisible(false);
+			item5.setVisible(false);
+			item6.setVisible(false);
+		}else
+		if (lItem-iTour==2) {
+			updateDataItem1(i);
+			i++;
+			updateDataItem2(i);
+			item3.setVisible(false);
+			item4.setVisible(false);
+			item5.setVisible(false);
+			item6.setVisible(false);
+		}else
+		if (lItem-iTour==1) {
+			updateDataItem1(i);
+			item2.setVisible(false);
+			item3.setVisible(false);
+			item4.setVisible(false);
+			item5.setVisible(false);
+			item6.setVisible(false);
+		}else
+		if (lItem>5) {
+			item1.setVisible(true);
+			item2.setVisible(true);
+			item3.setVisible(true);
+			item4.setVisible(true);
+			item5.setVisible(true);
+			item6.setVisible(true);
+			updateDataItem1(i);
+			i++;
+			updateDataItem2(i);
+			i++;
+			updateDataItem3(i);
+			i++;
+			updateDataItem4(i);
+			i++;
+			updateDataItem5(i);
+			i++;
+			updateDataItem6(i);
+			i++;
+		}
+	}
+	
+	private void updateDataItem1(int i) {
+		tourPicture1.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourName1.setText(ds.get(i).getTenTour());
+		DecimalFormat df = new DecimalFormat("#,###Đ");
+		tourPrice1.setText(df.format(ds.get(i).getGia()));
+		tourTime1.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		tourID1.setText("Mã tour: "+ds.get(i).getMaTour());
+	}
+	
+	private void updateDataItem2(int i) {
+		tourPicture2.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourName2.setText(ds.get(i).getTenTour());
+		DecimalFormat df = new DecimalFormat("#,###Đ");
+		tourPrice2.setText(df.format(ds.get(i).getGia()));
+		tourTime2.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		tourID2.setText("Mã tour: "+ds.get(i).getMaTour());
+	}
+	
+	private void updateDataItem3(int i) {
+		tourPicture3.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourName3.setText(ds.get(i).getTenTour());
+		DecimalFormat df = new DecimalFormat("#,###Đ");
+		tourPrice3.setText(df.format(ds.get(i).getGia()));
+		tourTime3.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		tourID3.setText("Mã tour: "+ds.get(i).getMaTour());
+	}
+	
+	private void updateDataItem4(int i) {
+		tourPicture4.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourName4.setText(ds.get(i).getTenTour());
+		DecimalFormat df = new DecimalFormat("#,###Đ");
+		tourPrice4.setText(df.format(ds.get(i).getGia()));
+		tourTime4.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		tourID4.setText("Mã tour: "+ds.get(i).getMaTour());
+	}
+	private void updateDataItem5(int i) {
+		tourPicture5.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourName5.setText(ds.get(i).getTenTour());
+		DecimalFormat df = new DecimalFormat("#,###Đ");
+		tourPrice5.setText(df.format(ds.get(i).getGia()));
+		tourTime5.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		tourID5.setText("Mã tour: "+ds.get(i).getMaTour());
+	}
+	private void updateDataItem6(int i) {
+		tourPicture6.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourName6.setText(ds.get(i).getTenTour());
+		DecimalFormat df = new DecimalFormat("#,###Đ");
+		tourPrice6.setText(df.format(ds.get(i).getGia()));
+		tourTime6.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		tourID6.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 }
