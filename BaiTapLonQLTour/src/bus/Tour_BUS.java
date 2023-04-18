@@ -41,5 +41,10 @@ public class Tour_BUS implements ITour{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public Tour getTour(String id) {
+		// TODO Auto-generated method stub
+		return tour_Dao.getTour(id);
+	}
 
 }

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -83,6 +84,51 @@ public class Tour_DAO implements ITour{
 	public boolean suaTour() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	@Override
+	public Tour getTour(String id) {
+		// TODO Auto-generated method stub
+		Tour t = null;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement statement = null;
+		try {
+			String sql = "select * from tour where maTour = ?";
+			statement = con.prepareStatement(sql);
+			statement.setString(1, id);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String ma = rs.getString(1);
+				String ten = rs.getString(2);
+				Date gtKhoiHanh = rs.getDate(3);
+				int thoiGian = rs.getInt(4);
+				int soVeConLai = rs.getInt(5);
+				double gia= rs.getDouble(6);
+				Blob clob = rs.getBlob(7);
+				byte[] byteArr = clob.getBytes(1, (int)clob.length());
+				//FileOutputStream fos = new FileOutputStream("./src/images/"+ma+".png");
+				//System.out.println("Image retrieved successfully.");
+				//fos.write(byteArr);
+				ByteArrayInputStream bis = new ByteArrayInputStream(byteArr);
+				BufferedImage img = ImageIO.read(bis);
+				//fos.close();
+				Date gtTapTrung = rs.getDate(8);
+				String noiKhoiHanh = rs.getNString(9);
+				t = new Tour(ma, ten, gtKhoiHanh, thoiGian, soVeConLai, gia, img, gtTapTrung, noiKhoiHanh);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				statement.close();
+			} catch (Exception e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+		}
+		return t;
 	}
 
 }

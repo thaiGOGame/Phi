@@ -17,6 +17,9 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -82,6 +85,7 @@ public class Home extends JFrame {
 		tourBus = new Tour_BUS();
 		ds = tourBus.getDS();
 		
+		//datTour = new DatTour("");
 		setSize(1200,700);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
@@ -177,18 +181,18 @@ public class Home extends JFrame {
 		//
 		item1 = new JPanel();
 		item1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		item1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				datTour = new DatTour();
-				datTour.setVisible(true);
-			}
-		});
 		item1.setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
 		item1.setBackground(Color.WHITE);
 		item1.setBounds(0, 0, 320, 260);
 		listTour.add(item1);
 		item1.setLayout(null);
+		item1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				datTour = new DatTour(tourID1.getText().substring(9));
+				datTour.setVisible(true);
+			}
+		});
 		
 		tourPicture1 = new JLabel("");
 		tourPicture1.setFocusTraversalKeysEnabled(false);
@@ -231,6 +235,7 @@ public class Home extends JFrame {
 		tourBtn1.setBounds(10, 235, 88, 16);
 		item1.add(tourBtn1);
 		
+		
 		item2 = new JPanel();
 		item2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		item2.setLayout(null);
@@ -238,6 +243,13 @@ public class Home extends JFrame {
 		item2.setBackground(Color.WHITE);
 		item2.setBounds(341, 0, 320, 260);
 		listTour.add(item2);
+		item2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				datTour = new DatTour(tourID2.getText().substring(9));
+				datTour.setVisible(true);
+			}
+		});
 		
 		tourPicture2 = new JLabel("");
 		tourPicture2.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -286,6 +298,13 @@ public class Home extends JFrame {
 		item3.setBackground(Color.WHITE);
 		item3.setBounds(680, 0, 320, 260);
 		listTour.add(item3);
+		item3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				datTour = new DatTour(tourID3.getText().substring(9));
+				datTour.setVisible(true);
+			}
+		});
 		
 		tourPicture3 = new JLabel("");
 		tourPicture3.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -334,6 +353,13 @@ public class Home extends JFrame {
 		item4.setBackground(Color.WHITE);
 		item4.setBounds(0, 280, 320, 260);
 		listTour.add(item4);
+		item4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				datTour = new DatTour(tourID4.getText().substring(9));
+				datTour.setVisible(true);
+			}
+		});
 		
 		tourPicture4 = new JLabel("");
 		tourPicture4.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -382,6 +408,13 @@ public class Home extends JFrame {
 		item5.setBackground(Color.WHITE);
 		item5.setBounds(341, 280, 320, 260);
 		listTour.add(item5);
+		item5.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				datTour = new DatTour(tourID5.getText().substring(9));
+				datTour.setVisible(true);
+			}
+		});
 		
 		tourPicture5 = new JLabel("");
 		tourPicture5.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -430,6 +463,13 @@ public class Home extends JFrame {
 		item6.setBackground(Color.WHITE);
 		item6.setBounds(680, 280, 320, 260);
 		listTour.add(item6);
+		item6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				datTour = new DatTour(tourID6.getText().substring(9));
+				datTour.setVisible(true);
+			}
+		});
 		
 		tourPicture6 = new JLabel("");
 		tourPicture6.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -592,16 +632,17 @@ public class Home extends JFrame {
 	}
 	
 	private void updateDataItem1(int i) {
-		tourPicture1.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourPicture1.setIcon(new ImageIcon(scaledImage(ds.get(i).getHinhAnh(),tourPicture1.getWidth(),tourPicture1.getHeight())));
 		tourName1.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice1.setText(df.format(ds.get(i).getGia()));
 		tourTime1.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		System.out.println(ds.get(i).getTgKhoiHanh());
 		tourID1.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	
 	private void updateDataItem2(int i) {
-		tourPicture2.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourPicture2.setIcon(new ImageIcon(scaledImage(ds.get(i).getHinhAnh(),tourPicture2.getWidth(),tourPicture2.getHeight())));
 		tourName2.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice2.setText(df.format(ds.get(i).getGia()));
@@ -610,7 +651,7 @@ public class Home extends JFrame {
 	}
 	
 	private void updateDataItem3(int i) {
-		tourPicture3.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourPicture3.setIcon(new ImageIcon(scaledImage(ds.get(i).getHinhAnh(),tourPicture3.getWidth(),tourPicture3.getHeight())));
 		tourName3.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice3.setText(df.format(ds.get(i).getGia()));
@@ -619,7 +660,7 @@ public class Home extends JFrame {
 	}
 	
 	private void updateDataItem4(int i) {
-		tourPicture4.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourPicture4.setIcon(new ImageIcon(scaledImage(ds.get(i).getHinhAnh(),tourPicture4.getWidth(),tourPicture4.getHeight())));
 		tourName4.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice4.setText(df.format(ds.get(i).getGia()));
@@ -627,7 +668,7 @@ public class Home extends JFrame {
 		tourID4.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	private void updateDataItem5(int i) {
-		tourPicture5.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourPicture5.setIcon(new ImageIcon(scaledImage(ds.get(i).getHinhAnh(),tourPicture5.getWidth(),tourPicture5.getHeight())));
 		tourName5.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice5.setText(df.format(ds.get(i).getGia()));
@@ -635,11 +676,19 @@ public class Home extends JFrame {
 		tourID5.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	private void updateDataItem6(int i) {
-		tourPicture6.setIcon(new ImageIcon(ds.get(i).getHinhAnh()));
+		tourPicture6.setIcon(new ImageIcon(scaledImage(ds.get(i).getHinhAnh(),tourPicture6.getWidth(),tourPicture6.getHeight())));
 		tourName6.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice6.setText(df.format(ds.get(i).getGia()));
 		tourTime6.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
 		tourID6.setText("Mã tour: "+ds.get(i).getMaTour());
+	}
+	private BufferedImage scaledImage(BufferedImage img, int w, int h) {
+		BufferedImage resizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = resizedImage.createGraphics();
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2.drawImage(img, 0, 0, w, h,null);
+		g2.dispose();
+		return resizedImage;
 	}
 }
