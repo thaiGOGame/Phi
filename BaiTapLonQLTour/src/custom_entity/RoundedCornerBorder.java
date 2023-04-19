@@ -1,4 +1,4 @@
-package View;
+package custom_entity;
 
 import java.util.Objects;
 import java.awt.*;
@@ -12,7 +12,7 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.plaf.basic.BasicComboPopup;
 
 public class RoundedCornerBorder extends AbstractBorder{
-	  protected static final int ARC = 25;
+	  protected static final int ARC = 40;
 	  @Override public void paintBorder(
 	      Component c, Graphics g, int x, int y, int width, int height) {
 	    Graphics2D g2 = (Graphics2D) g.create();

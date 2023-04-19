@@ -10,7 +10,7 @@ GO
 
 SET ANSI_PADDING ON
 GO
-
+drop database QLTOUR
 CREATE TABLE [dbo].[Tour](
 	[maTour] [nchar](15) NOT NULL,
 	[tenTour] [nvarchar](50) NULL,
