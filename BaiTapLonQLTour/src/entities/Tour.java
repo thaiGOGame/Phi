@@ -4,8 +4,10 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -14,13 +16,17 @@ import javax.swing.ImageIcon;
 public class Tour {
 	private String maTour;
 	private String tenTour;
-	private Date tgKhoiHanh;
-	private int thoiGian;
+	private LocalDate ngayKhoiHanh;
+	private Time tgKhoiHanh;
+	private int soNgay;
 	private int soVeConLai;
 	private double gia;
 	private BufferedImage hinhAnh;
-	private Date tgTapTrung;
-	private String noiKhoiHanh;
+	private LocalDate ngayTapTrung;
+	private Time tgTapTrung;
+	private String diemDi;
+	private String diemDen;
+	
 	public String getMaTour() {
 		return maTour;
 	}
@@ -33,17 +39,23 @@ public class Tour {
 	public void setTenTour(String tenTour) {
 		this.tenTour = tenTour;
 	}
-	public Date getTgKhoiHanh() {
+	public LocalDate getNgayKhoiHanh() {
+		return ngayKhoiHanh;
+	}
+	public void setNgayKhoiHanh(LocalDate ngayKhoiHanh) {
+		this.ngayKhoiHanh = ngayKhoiHanh;
+	}
+	public Time getTgKhoiHanh() {
 		return tgKhoiHanh;
 	}
-	public void setTgKhoiHanh(Date tgKhoiHanh) {
+	public void setTgKhoiHanh(Time tgKhoiHanh) {
 		this.tgKhoiHanh = tgKhoiHanh;
 	}
-	public int getThoiGian() {
-		return thoiGian;
+	public int getSoNgay() {
+		return soNgay;
 	}
-	public void setThoiGian(int thoiGian) {
-		this.thoiGian = thoiGian;
+	public void setSoNgay(int soNgay) {
+		this.soNgay = soNgay;
 	}
 	public int getSoVeConLai() {
 		return soVeConLai;
@@ -63,30 +75,46 @@ public class Tour {
 	public void setHinhAnh(BufferedImage hinhAnh) {
 		this.hinhAnh = hinhAnh;
 	}
-	public Date getTgTapTrung() {
+	public LocalDate getNgayTapTrung() {
+		return ngayTapTrung;
+	}
+	public void setNgayTapTrung(LocalDate ngayTapTrung) {
+		this.ngayTapTrung = ngayTapTrung;
+	}
+	public Time getTgTapTrung() {
 		return tgTapTrung;
 	}
-	public void setTgTapTrung(Date tgTapTrung) {
+	public void setTgTapTrung(Time tgTapTrung) {
 		this.tgTapTrung = tgTapTrung;
 	}
-	public String getNoiKhoiHanh() {
-		return noiKhoiHanh;
+	public String getDiemDi() {
+		return diemDi;
 	}
-	public void setNoiKhoiHanh(String noiKhoiHanh) {
-		this.noiKhoiHanh = noiKhoiHanh;
+	public void setDiemDi(String diemDi) {
+		this.diemDi = diemDi;
 	}
-	public Tour(String maTour, String tenTour, Date tgKhoiHanh, int thoiGian, int soVeConLai, double gia,
-			BufferedImage hinhAnh, Date tgTapTrung, String noiKhoiHanh) {
+	public String getDiemDen() {
+		return diemDen;
+	}
+	public void setDiemDen(String diemDen) {
+		this.diemDen = diemDen;
+	}
+	
+	public Tour(String maTour, String tenTour, LocalDate ngayKhoiHanh, Time tgKhoiHanh, int soNgay, int soVeConLai,
+			double gia, BufferedImage hinhAnh, LocalDate ngayTapTrung, Time tgTapTrung, String diemDi, String diemDen) {
 		super();
 		this.maTour = maTour;
 		this.tenTour = tenTour;
+		this.ngayKhoiHanh = ngayKhoiHanh;
 		this.tgKhoiHanh = tgKhoiHanh;
-		this.thoiGian = thoiGian;
+		this.soNgay = soNgay;
 		this.soVeConLai = soVeConLai;
 		this.gia = gia;
 		this.hinhAnh = hinhAnh;
+		this.ngayTapTrung = ngayTapTrung;
 		this.tgTapTrung = tgTapTrung;
-		this.noiKhoiHanh = noiKhoiHanh;
+		this.diemDi = diemDi;
+		this.diemDen = diemDen;
 	}
 	public Tour(String maTour) {
 		super();
@@ -110,12 +138,7 @@ public class Tour {
 		Tour other = (Tour) obj;
 		return Objects.equals(maTour, other.maTour);
 	}
-	@Override
-	public String toString() {
-		return "Tour [maTour=" + maTour + ", tenTour=" + tenTour + ", tgKhoiHanh=" + tgKhoiHanh + ", thoiGian="
-				+ thoiGian + ", soVeConLai=" + soVeConLai + ", gia=" + gia + ", hinhAnh=" + hinhAnh + ", tgTapTrung="
-				+ tgTapTrung + ", noiKhoiHanh=" + noiKhoiHanh + "]";
-	}
+	
 	
 	
 	

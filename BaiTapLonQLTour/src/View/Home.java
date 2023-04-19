@@ -5,34 +5,46 @@ import javax.swing.JPanel;
 import bus.Tour_BUS;
 import connectDB.ConnectDB;
 import entities.Tour;
-
 import java.awt.Color;
-import java.awt.Dimension;
-
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
-import javax.swing.JFormattedTextField;
+
+import org.jdatepicker.impl.DateComponentFormatter;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
+import javax.swing.JButton;
+import javax.swing.JFormattedTextField.AbstractFormatter;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 public class Home extends JFrame {
 
@@ -41,6 +53,7 @@ public class Home extends JFrame {
 	private DatTour datTour;
 	//
 	private JPanel item1,item2,item3,item4,item5,item6;
+	private CustomComboxBox cboDiemDi,cboDiemDen;
 	//
 	private JLabel tourPicture1,tourName1,tourPrice1,tourTime1,tourID1;
 	private JLabel tourPicture2,tourName2,tourPrice2,tourTime2,tourID2;
@@ -50,23 +63,21 @@ public class Home extends JFrame {
 	private JLabel tourPicture6,tourName6,tourPrice6,tourTime6,tourID6;
 	//
 	private Tour_BUS tourBus;
-	private ArrayList<Tour> ds;
+	private ArrayList<Tour> ds,dsTimKiem;
 	//
-	private int iTour,lItem;;
+	private int iTour,lItem;
+	private JLabel lblNgy;
+	
+	private UtilDateModel model; 
+	private JDatePanelImpl datePanel; 
+	private JDatePickerImpl datePicker;
+	
+	private String sDDi, sDDen, sNgay;
+	private JTextField txtMess;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					Home frame = new Home();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
 		new Home().setVisible(true);
 	}
 
@@ -131,41 +142,24 @@ public class Home extends JFrame {
 		btnUser.setBounds(1050, 11, 51, 52);
 		pnHeader.add(btnUser);
 		
-		JPanel radius = new JPanel() {
-		     @Override
-		     protected void paintComponent(Graphics g) {
-		        super.paintComponent(g);
-		        Dimension arcs = new Dimension(50,50);
-		        int width = getWidth();
-		        int height = getHeight();
-		        Graphics2D graphics = (Graphics2D) g;
-		        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-
-		        //Draws the rounded opaque panel with borders.
-		        graphics.setColor(getBackground());
-		        graphics.fillRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height);//paint background
-		        graphics.setColor(getForeground());
-		        graphics.drawRoundRect(0, 0, width-1, height-1, arcs.width, arcs.height);//paint border
-		     }
-		  };
-		radius.setOpaque(false);
-		radius.setBackground(new Color(255, 255, 255));
-		radius.setBounds(247, 11, 700, 58);
-		pnHeader.add(radius);
-		radius.setLayout(null);
-		
 		JLabel lblLogo = new JLabel("ViGo");
 		lblLogo.setFont(new Font("Arial", Font.BOLD, 35));
 		lblLogo.setForeground(new Color(255, 255, 255));
 		lblLogo.setIcon(new ImageIcon("T:\\java\\baitap\\TestGui\\images\\beach_118051 (1).png"));
-		lblLogo.setBounds(10, 3, 339, 72);
+		lblLogo.setBounds(10, 3, 211, 72);
 		pnHeader.add(lblLogo);
 		
 		JLabel btnCart = new JLabel("");
 		btnCart.setBounds(1104, 11, 51, 52);
 		pnHeader.add(btnCart);
 		btnCart.setIcon(new ImageIcon("T:\\java\\baitap\\TestGui\\images\\cart.png"));
+		
+		JPanel search = new JPanel();
+		search.setBackground(new Color(255, 255, 255));
+		search.setBounds(215, 11, 790, 58);
+		search.setLayout(null);
+		search.setBorder(new RoundedCornerBorder());
+		pnHeader.add(search);
 		
 		JLabel titleContent = new JLabel("Tour đặc biệt dành cho bạn");
 		titleContent.setFont(new Font("Arial", Font.BOLD, 20));
@@ -177,6 +171,76 @@ public class Home extends JFrame {
 		listTour.setBounds(100, 149, 1000, 540);
 		pnHome.add(listTour);
 		listTour.setLayout(null);
+		//
+		String[] strDiemDi = updateCboBoxDiemDi();
+		cboDiemDi = new CustomComboxBox(strDiemDi, ChonMau.blue_4B70F5, Color.white, Color.black, ChonMau.blue_4B70F5, 30, true);
+		cboDiemDi.setLocation(40, 5);
+		search.add(cboDiemDi.getPanel(Color.white, 55, 5, 170, 45));
+		sDDi = (String) cboDiemDi.getSelectedItem();
+		
+		JLabel sDiemDi = new JLabel("Điểm đi:");
+		sDiemDi.setFont(new Font("Arial", Font.PLAIN, 12));
+		sDiemDi.setBounds(10, 21, 50, 20);
+		search.add(sDiemDi);
+		
+		JLabel sDiemDen = new JLabel("Điểm đến:");
+		sDiemDen.setFont(new Font("Arial", Font.PLAIN, 12));
+		sDiemDen.setBounds(230, 21, 66, 20);
+		search.add(sDiemDen);
+		
+		String[] strDiemDen = updateCboBoxDiemDen();
+		cboDiemDen = new CustomComboxBox(strDiemDen, ChonMau.blue_4B70F5, Color.white, Color.black, ChonMau.blue_4B70F5, 30, true);
+		cboDiemDen.setLocation(40, 5);
+		search.add(cboDiemDen.getPanel(Color.white, 280, 5, 170, 45));
+		sDDen = (String) cboDiemDen.getSelectedItem();
+		
+		lblNgy = new JLabel("Ngày:");
+		lblNgy.setFont(new Font("Arial", Font.PLAIN, 12));
+		lblNgy.setBounds(450, 21, 36, 20);
+		search.add(lblNgy);
+		
+		model = new UtilDateModel();
+		Properties p = new Properties();
+		p.put("text.today", "Today");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+		datePanel = new JDatePanelImpl(model, p);
+		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.getJFormattedTextField().setBorder(new LineBorder(new Color(65, 105, 225), 1, true));
+		datePicker.setBackground(new Color(255, 255, 255));
+		datePicker.getJFormattedTextField().setBackground(new Color(255, 255, 255));
+		datePicker.setBounds(490, 17, 180, 28);
+		datePicker.getJDateInstantPanel().setShowYearButtons(true);
+		//datePicker.getJFormattedTextField().setText("2023-01-01");
+		//datePicker.getModel().setValue(Date("2023-01-01"));
+		search.add(datePicker);
+		
+		JButton btnNewButton = new JButton("Tìm");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//dsTimKiem.removeAll(dsTimKiem);
+				Date date= (Date) datePicker.getModel().getValue();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sNgay=sdf.format(date);
+				dsTimKiem=tourBus.timKiem(sDDi, sDDen, sNgay);
+				if (dsTimKiem.size()>0) {
+					txtMess.setText(sNgay);
+					iTour=0;
+					ds=dsTimKiem;
+					lItem=ds.size();
+					showList(iTour);
+				}
+				else txtMess.setText("không tìm thấy kết quả!"+sNgay);
+				System.out.println(sNgay);
+			}
+		});
+		btnNewButton.setForeground(new Color(255, 255, 255));
+		btnNewButton.setBorder(null);
+		btnNewButton.setBackground(new Color(65, 105, 225));
+		btnNewButton.setBounds(720, 20, 60, 23);
+		search.add(btnNewButton);
+		//cbo1.setBounds(320, 110, 180, 30);
+		//
 		
 		//
 		item1 = new JPanel();
@@ -191,6 +255,7 @@ public class Home extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				datTour = new DatTour(tourID1.getText().substring(9));
 				datTour.setVisible(true);
+				
 			}
 		});
 		
@@ -523,15 +588,34 @@ public class Home extends JFrame {
 		btnRedu.setBounds(1122, 383, 48, 37);
 		pnHome.add(btnRedu);
 		
-		JFormattedTextField formattedTextField = new JFormattedTextField();
-		formattedTextField.setBounds(560, 91, 184, 20);
-		pnHome.add(formattedTextField);
+		txtMess = new JTextField();
+		txtMess.setBorder(null);
+		txtMess.setHorizontalAlignment(SwingConstants.CENTER);
+		txtMess.setForeground(new Color(255, 0, 0));
+		txtMess.setBounds(487, 109, 227, 20);
+		pnHome.add(txtMess);
+		txtMess.setColumns(10);
 		
+		JTextPane btnReset = new JTextPane();
+		btnReset.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ds=tourBus.getDS();
+				iTour=0;
+				lItem=ds.size();
+				showList(iTour);
+				dsTimKiem.removeAll(dsTimKiem);
+			}
+		});
+		btnReset.setText("reset");
+		btnReset.setBounds(291, 101, 26, 31);
+		pnHome.add(btnReset);
+		ds = tourBus.getDS();
 		iTour=0;
 		lItem=ds.size();
 		showList(iTour);
 		if (iTour<7) btnUndo.setVisible(false);
-		if (lItem-iTour<7) btnRedu.setVisible(false);
+		if (lItem-iTour<6) btnRedu.setVisible(false);
 		btnUndo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -557,7 +641,7 @@ public class Home extends JFrame {
 	}
 	
 	private void showList(int i) {
-		ds= tourBus.getDS();
+		//ds= tourBus.getDS();
 		if (lItem-iTour==5) {
 			updateDataItem1(i);
 			i++;
@@ -609,6 +693,16 @@ public class Home extends JFrame {
 			item5.setVisible(false);
 			item6.setVisible(false);
 		}else
+		if (lItem-iTour<1) {
+			txtMess.setText("Không có tour!");
+			item1.setVisible(false);
+			item2.setVisible(false);
+			item3.setVisible(false);
+			item4.setVisible(false);
+			item5.setVisible(false);
+			item6.setVisible(false);
+		}
+		else
 		if (lItem>5) {
 			item1.setVisible(true);
 			item2.setVisible(true);
@@ -636,8 +730,9 @@ public class Home extends JFrame {
 		tourName1.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice1.setText(df.format(ds.get(i).getGia()));
-		tourTime1.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
-		System.out.println(ds.get(i).getTgKhoiHanh());
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		tourTime1.setText(dtf.format(ds.get(i).getNgayKhoiHanh())+" - "+ds.get(i).getSoNgay()+" ngày");
+		System.out.println(ds.get(i).getNgayKhoiHanh());
 		tourID1.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	
@@ -646,7 +741,8 @@ public class Home extends JFrame {
 		tourName2.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice2.setText(df.format(ds.get(i).getGia()));
-		tourTime2.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		tourTime2.setText(dtf.format(ds.get(i).getNgayKhoiHanh())+" - "+ds.get(i).getSoNgay()+" ngày");
 		tourID2.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	
@@ -655,7 +751,8 @@ public class Home extends JFrame {
 		tourName3.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice3.setText(df.format(ds.get(i).getGia()));
-		tourTime3.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		tourTime3.setText(dtf.format(ds.get(i).getNgayKhoiHanh())+" - "+ds.get(i).getSoNgay()+" ngày");
 		tourID3.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	
@@ -664,7 +761,8 @@ public class Home extends JFrame {
 		tourName4.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice4.setText(df.format(ds.get(i).getGia()));
-		tourTime4.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		tourTime4.setText(dtf.format(ds.get(i).getNgayKhoiHanh())+" - "+ds.get(i).getSoNgay()+" ngày");
 		tourID4.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	private void updateDataItem5(int i) {
@@ -672,7 +770,8 @@ public class Home extends JFrame {
 		tourName5.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice5.setText(df.format(ds.get(i).getGia()));
-		tourTime5.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		tourTime5.setText(dtf.format(ds.get(i).getNgayKhoiHanh())+" - "+ds.get(i).getSoNgay()+" ngày");
 		tourID5.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	private void updateDataItem6(int i) {
@@ -680,7 +779,8 @@ public class Home extends JFrame {
 		tourName6.setText(ds.get(i).getTenTour());
 		DecimalFormat df = new DecimalFormat("#,###Đ");
 		tourPrice6.setText(df.format(ds.get(i).getGia()));
-		tourTime6.setText(DateFormat.getDateInstance().format(ds.get(i).getTgKhoiHanh())+" - "+ds.get(i).getThoiGian()+" ngày");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		tourTime6.setText(dtf.format(ds.get(i).getNgayKhoiHanh())+" - "+ds.get(i).getSoNgay()+" ngày");
 		tourID6.setText("Mã tour: "+ds.get(i).getMaTour());
 	}
 	private BufferedImage scaledImage(BufferedImage img, int w, int h) {
@@ -690,5 +790,26 @@ public class Home extends JFrame {
 		g2.drawImage(img, 0, 0, w, h,null);
 		g2.dispose();
 		return resizedImage;
+	}
+	
+
+	private String[] updateCboBoxDiemDi() {
+		String[] s = {};
+		List<String> list = new ArrayList<>(Arrays.asList(s));
+		for (Tour t : tourBus.getDS()) {
+				if (!list.contains(t.getDiemDi())) list.add(t.getDiemDi());
+		}
+		s=list.toArray(new String[0]);
+		return s;
+	}
+	private String[] updateCboBoxDiemDen() {
+		String[] s = {};
+		List<String> list = new ArrayList<>(Arrays.asList(s));
+		for (Tour t : tourBus.getDS()) {
+				if (!list.contains(t.getDiemDen())) list.add(t.getDiemDen());
+			
+		}
+		s=list.toArray(new String[0]);
+		return s;
 	}
 }

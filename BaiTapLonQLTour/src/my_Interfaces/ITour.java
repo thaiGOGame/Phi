@@ -1,5 +1,6 @@
 package my_Interfaces;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import entities.Tour;
@@ -11,4 +12,5 @@ public interface ITour {
 	public boolean themTour();
 	public boolean xoaTour();
 	public boolean suaTour();
+	public ArrayList<Tour> timKiem(String diemDi, String diemDen, String ngayDi);
 }

@@ -46,5 +46,11 @@ public class Tour_BUS implements ITour{
 		// TODO Auto-generated method stub
 		return tour_Dao.getTour(id);
 	}
+	@Override
+	public ArrayList<Tour> timKiem(String diemDi, String diemDen, String ngayDi) {
+		// TODO Auto-generated method stub
+		ArrayList<Tour> ds = tour_Dao.timKiem(diemDi, diemDen, ngayDi);
+		return ds;
+	}
 
 }
