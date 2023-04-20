@@ -50,11 +50,10 @@ public class Tour_DAO implements ITour{
 				byte[] byteArr = clob.getBytes(1, (int)clob.length());
 				ByteArrayInputStream bis = new ByteArrayInputStream(byteArr);
 				BufferedImage img = ImageIO.read(bis);
-				LocalDate ngayTapTrung = rs.getDate(8).toLocalDate();
 				Time tgTapTrung = rs.getTime(8);
 				String diemDI = rs.getNString(9);
 				String diemDen = rs.getNString(10);
-				Tour t = new Tour(ma, ten, ngayKhoiHanh, tgKhoiHanh, soNgay, soVeConLai, gia, img, ngayTapTrung, tgTapTrung, diemDI, diemDen);
+				Tour t = new Tour(ma, ten, tgTapTrung, tgKhoiHanh, ngayKhoiHanh,  soNgay, soVeConLai, gia, img, diemDI, diemDen);
 				ds.add(t);
 			}
 		} catch (Exception e) {
@@ -115,7 +114,7 @@ public class Tour_DAO implements ITour{
 				Time tgTapTrung = rs.getTime(8);
 				String diemDI = rs.getNString(9);
 				String diemDen = rs.getNString(10);
-				t = new Tour(ma, ten, ngayKhoiHanh, tgKhoiHanh, soNgay, soVeConLai, gia, img, ngayTapTrung, tgTapTrung, diemDI, diemDen);
+				t = new Tour(ma, ten, tgTapTrung, tgKhoiHanh, ngayKhoiHanh,  soNgay, soVeConLai, gia, img, diemDI, diemDen);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -161,13 +160,18 @@ public class Tour_DAO implements ITour{
 				Time tgTapTrung = rs.getTime(8);
 				String dDi = rs.getNString(9);
 				String dDen = rs.getNString(10);
-				Tour t = new Tour(ma, ten, ngayKhoiHanh, tgKhoiHanh, soNgay, soVeConLai, gia, img, ngayTapTrung, tgTapTrung, dDi, dDen);
+				Tour t = new Tour(ma, ten, tgTapTrung, tgKhoiHanh, ngayKhoiHanh,  soNgay, soVeConLai, gia, img, dDi, dDen);
 				list.add(t);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 		return list;
+	}
+	@Override
+	public ArrayList<Tour> timKiem(String noiDungTimKiem) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

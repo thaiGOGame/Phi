@@ -1,6 +1,7 @@
 package custom_entity;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -116,12 +117,14 @@ public class CustomButton extends JButton {
 		makeButton();
 	}
     private void makeButton(){
+    	
     	setForeground(color_foreground);
         setContentAreaFilled(false);
         //  Add event mouse
         addMouseListener();
         setFocusPainted(false);
         setBorder(null);
+        
     }
 	public CustomButton(String text) {
         //  Init Color

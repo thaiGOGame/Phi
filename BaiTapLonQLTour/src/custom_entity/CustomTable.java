@@ -1,6 +1,7 @@
 package custom_entity;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -10,6 +11,8 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 public class CustomTable extends JTable{
@@ -30,7 +33,7 @@ public class CustomTable extends JTable{
 	    this.setBorder(BorderFactory.createLineBorder(borderColor));
 	    this.setRowHeight(30);
 	    this.setBackground(Color.white);
-	    this.setFont(new Font(null,ABORT,30));
+	    this.setFont(new Font(null,ABORT,10));
 	}
 	public CustomTable(DefaultTableModel tableModel,Color backgroundHeaderColor,Color foregroundHeaderColor ,Color foregroundColor, Color borderColor,
 			Color stripeBackgroundColor, Color stripeForegroundColor) {
@@ -59,5 +62,11 @@ public class CustomTable extends JTable{
 		this.foregroundHeaderColor = foregroundHeaderColor;
 		this.backgroundHeaderColor = backgroundHeaderColor;
 		makeCustomTable();
+	}
+	@Override
+	public boolean isCellEditable(int row, int column) {
+		// TODO Auto-generated method stub
+		return false;
+		
 	}
 }

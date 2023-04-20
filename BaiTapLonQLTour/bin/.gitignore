@@ -1,3 +1,6 @@
-/connectDB/
 /View/
+/bus/
+/dao/
+/my_Interfaces/
+/entities/
 /custom_entity/

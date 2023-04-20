@@ -13,17 +13,18 @@ import java.util.Objects;
 
 import javax.swing.ImageIcon;
 
+import custom_entity.Format;
+
 public class Tour {
 	private String maTour;
 	private String tenTour;
-	private LocalDate ngayKhoiHanh;
+	private Time tgTapTrung;
 	private Time tgKhoiHanh;
+	private LocalDate ngayKhoiHanh;
 	private int soNgay;
 	private int soVeConLai;
 	private double gia;
 	private BufferedImage hinhAnh;
-	private LocalDate ngayTapTrung;
-	private Time tgTapTrung;
 	private String diemDi;
 	private String diemDen;
 	
@@ -75,12 +76,6 @@ public class Tour {
 	public void setHinhAnh(BufferedImage hinhAnh) {
 		this.hinhAnh = hinhAnh;
 	}
-	public LocalDate getNgayTapTrung() {
-		return ngayTapTrung;
-	}
-	public void setNgayTapTrung(LocalDate ngayTapTrung) {
-		this.ngayTapTrung = ngayTapTrung;
-	}
 	public Time getTgTapTrung() {
 		return tgTapTrung;
 	}
@@ -100,19 +95,19 @@ public class Tour {
 		this.diemDen = diemDen;
 	}
 	
-	public Tour(String maTour, String tenTour, LocalDate ngayKhoiHanh, Time tgKhoiHanh, int soNgay, int soVeConLai,
-			double gia, BufferedImage hinhAnh, LocalDate ngayTapTrung, Time tgTapTrung, String diemDi, String diemDen) {
+	
+	public Tour(String maTour, String tenTour, Time tgTapTrung, Time tgKhoiHanh, LocalDate ngayKhoiHanh, int soNgay,
+			int soVeConLai, double gia, BufferedImage hinhAnh, String diemDi, String diemDen) {
 		super();
 		this.maTour = maTour;
 		this.tenTour = tenTour;
-		this.ngayKhoiHanh = ngayKhoiHanh;
+		this.tgTapTrung = tgTapTrung;
 		this.tgKhoiHanh = tgKhoiHanh;
+		this.ngayKhoiHanh = ngayKhoiHanh;
 		this.soNgay = soNgay;
 		this.soVeConLai = soVeConLai;
 		this.gia = gia;
 		this.hinhAnh = hinhAnh;
-		this.ngayTapTrung = ngayTapTrung;
-		this.tgTapTrung = tgTapTrung;
 		this.diemDi = diemDi;
 		this.diemDen = diemDen;
 	}
@@ -122,6 +117,11 @@ public class Tour {
 	}
 	public Tour() {
 		super();
+	}
+	
+	@Override
+	public String toString() {
+		return maTour + ";" + tenTour  + ";" + tgTapTrung + ";" + tgKhoiHanh  + ngayKhoiHanh + ";" + soNgay + ";" + soVeConLai + ";" + Format.formatMoneyVND(gia) + ";" + diemDi + ";" + diemDen;
 	}
 	@Override
 	public int hashCode() {
@@ -138,9 +138,4 @@ public class Tour {
 		Tour other = (Tour) obj;
 		return Objects.equals(maTour, other.maTour);
 	}
-	
-	
-	
-	
-	
 }
